@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Voronoi_V3</title>
+
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+</head>
+<body>
+<script>
+    var dataset = [[18,162], [114,403], [261,98] ]; //假设这是三家便利店
+    var width = 500;
+    var height = 500;
+
+    var voronoi = d3.geom.voronoi()
+            .clipExtent([[0, 0], [width, height]]);//从画面左上角到右下角为显示区间
+
+    var data = voronoi(dataset);
+    console.log(data);
+
+    var svg = d3.select('body').append('svg')
+            .attr('width',width)
+            .attr('height',height);
+
+    var color = d3.scale.category10();
+
+    //生成折线路径
+    svg.append("g").selectAll("path")
+            .data(data)
+            .enter()
+            .append("path")
+            .attr('fill',function(d,i){
+                return color(i);
+            })
+            .attr("d", function(d,i){
+                // 通过d.join("L")方法将每个顶点连接起来
+                return "M" + d.join("L") + "Z";
+            });
+
+    //生成便利店位置
+    svg.append('g').selectAll('circle')
+            .data(dataset)
+            .enter()
+            .append('circle')
+            .attr('cx', function(d,i){
+                return d[0];
+            })
+            .attr('cy', function(d,i){
+                return d[1];
+            })
+            .attr('r', 5)
+            .attr('fill','#fff');
+
+
+
+
+
+</script>
+</body>
+</html>
